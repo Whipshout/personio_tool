@@ -15,10 +15,10 @@
 &emsp;},<br>
 &emsp;"times": {<br>
 &emsp;&emsp;"breakStartHour": "14:00:00.0",<br>
-&emsp;&emsp;"breakDuration": 30,<br>
+&emsp;&emsp;"breakDurationMinutes": 30,<br>
 &emsp;&emsp;"breakRandomMinutesDelta": 30,<br>
 &emsp;&emsp;"workStartHour": "08:00:00.0",<br>
-&emsp;&emsp;"workDuration": 8,<br>
+&emsp;&emsp;"workDurationHours": 8,<br>
 &emsp;&emsp;"workRandomMinutesDelta": 30<br>
 &emsp;},<br>
 &emsp;"params": {<br>
