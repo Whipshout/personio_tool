@@ -1,5 +1,6 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
+use time::ext::NumericalDuration;
 use time::{format_description, Date};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -51,7 +52,7 @@ impl Dates {
 
         let format = format_description::parse("[year]-[month]-[day]")?;
         let start_day = Date::parse("2021-01-01", &format)?;
-        let end_day = time::OffsetDateTime::now_local()?.date();
+        let end_day = time::OffsetDateTime::now_utc().date() + 1.hours();
 
         let format = format_description::parse("[year]-[month]-[day]")?;
         let mut current_day = end_day;
