@@ -1,5 +1,4 @@
 use anyhow::{Context, Result};
-use owo_colors::OwoColorize;
 use regex::Regex;
 use reqwest::Client;
 use tokio::time::{sleep, Duration};
@@ -7,12 +6,17 @@ use tokio::time::{sleep, Duration};
 use crate::configuration::{get_configuration, Configuration};
 use crate::days::{fill_day, AbsenceTypes, Absences, Holidays};
 use crate::settings::Urls;
+use crate::telemetry::{Color, Logger};
 use crate::utils::{check_holiday_absence, extract_with_regex};
 
-pub fn initialize(path: &str) -> Result<(Configuration, Urls, Client)> {
-    println!("{}", "Loading config...".magenta().bold());
+pub fn initialize(path: &str) -> Result<(Configuration, Urls, Logger, Client)> {
+    let logger = Logger;
+
+    logger.separator(Color::Black, Color::White);
+    logger.info("Loading config...", Color::Magenta);
 
     let config = get_configuration(path)?;
+
     let urls: Urls = Default::default();
 
     let client = Client::builder()
@@ -21,54 +25,39 @@ pub fn initialize(path: &str) -> Result<(Configuration, Urls, Client)> {
         .build()
         .with_context(|| "Could not build client")?;
 
-    println!("{}", "Config loaded !!!".magenta().bold());
-    println!(
-        "{}",
-        "--------------------------------------------------------"
-            .on_white()
-            .black()
-    );
+    logger.info("Config loaded !!!", Color::Magenta);
+    logger.separator(Color::Black, Color::White);
 
-    Ok((config, urls, client))
+    Ok((config, urls, logger, client))
 }
 
-pub async fn run(config: Configuration, urls: Urls, client: Client) -> Result<()> {
+pub async fn run(config: Configuration, urls: Urls, logger: Logger, client: Client) -> Result<()> {
     let days = config.dates.generate_days()?;
 
-    println!("{}", "Trying to log in...".blue().bold());
+    logger.info("Trying to log in...", Color::Blue);
 
     let credentials = config.credentials;
     let login_response = credentials.login(&client, &urls.login).await?;
 
-    println!("{}", "Logged in !!!".blue().bold());
-    println!(
-        "{}",
-        "--------------------------------------------------------"
-            .on_white()
-            .black()
-    );
+    logger.info("Logged in !!!", Color::Blue);
+    logger.separator(Color::Black, Color::White);
 
     let regex = Regex::new(r"employeeId = (.*?);").with_context(|| "Invalid regex")?;
     let profile_id = extract_with_regex(regex, &login_response)?;
 
-    println!("{}", "Recovering holidays...".cyan().bold());
+    logger.info("Recovering holidays...", Color::Cyan);
 
     let holidays_response = Holidays::get_days(&client, &urls.holidays, &config.dates).await?;
     let holidays = holidays_response.get_dates();
 
-    println!("{}", "Holidays recovered !!!".cyan().bold());
-    println!(
-        "{}",
-        "--------------------------------------------------------"
-            .on_white()
-            .black()
-    );
+    logger.info("Holidays recovered !!!", Color::Cyan);
+    logger.separator(Color::Black, Color::White);
 
     let absence_types_response =
         AbsenceTypes::get_types(&client, &urls.absences, profile_id).await?;
     let absence_types = absence_types_response.get_ids();
 
-    println!("{}", "Recovering absences...".cyan().bold());
+    logger.info("Recovering absences...", Color::Cyan);
 
     let absence_response = Absences::get_days(
         &client,
@@ -80,21 +69,11 @@ pub async fn run(config: Configuration, urls: Urls, client: Client) -> Result<()
     .await?;
     let absences = absence_response.get_dates();
 
-    println!("{}", "Absences recovered !!!".cyan().bold());
-    println!(
-        "{}",
-        "--------------------------------------------------------"
-            .on_white()
-            .black()
-    );
+    logger.info("Absences recovered !!!", Color::Cyan);
+    logger.separator(Color::Black, Color::White);
 
-    println!("{}", "Starting to fill the days...".yellow().bold());
-    println!(
-        "{}",
-        "--------------------------------------------------------"
-            .on_white()
-            .black()
-    );
+    logger.info("Starting to fill the days...", Color::Yellow);
+    logger.separator(Color::Black, Color::White);
 
     for day in days {
         sleep(Duration::from_millis(
@@ -102,7 +81,7 @@ pub async fn run(config: Configuration, urls: Urls, client: Client) -> Result<()
         ))
         .await;
 
-        if check_holiday_absence(&holidays, &absences, &day) {
+        if check_holiday_absence(&holidays, &absences, &day, &logger) {
             continue;
         }
 
@@ -113,6 +92,7 @@ pub async fn run(config: Configuration, urls: Urls, client: Client) -> Result<()
             &urls.attendance,
             &day,
             config.dates.until_today,
+            &logger,
         )
         .await?
         {
@@ -120,19 +100,9 @@ pub async fn run(config: Configuration, urls: Urls, client: Client) -> Result<()
         }
     }
 
-    println!(
-        "{}",
-        "--------------------------------------------------------"
-            .on_white()
-            .black()
-    );
-    println!("{}", "Filling days finished !!!".yellow().bold());
-    println!(
-        "{}",
-        "--------------------------------------------------------"
-            .on_white()
-            .black()
-    );
+    logger.separator(Color::Black, Color::White);
+    logger.info("Filling days finished !!!", Color::Yellow);
+    logger.separator(Color::Black, Color::White);
 
     Ok(())
 }

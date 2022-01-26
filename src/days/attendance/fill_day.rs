@@ -1,10 +1,10 @@
 use anyhow::Result;
-use owo_colors::OwoColorize;
 use reqwest::Client;
 use uuid::Uuid;
 
 use crate::days::{AttendanceBody, Days, Periods};
 use crate::settings::Times;
+use crate::telemetry::Logger;
 
 pub async fn fill_day(
     client: &Client,
@@ -13,16 +13,13 @@ pub async fn fill_day(
     url: &str,
     current_day: &str,
     until_today: bool,
+    logger: &Logger,
 ) -> Result<bool> {
     let (response_days, is_filled) = Days::get_days(client, url, profile_id, current_day).await?;
 
     if is_filled {
-        println!(
-            "{} {} {}",
-            "Day".red().bold(),
-            &current_day.red().bold(),
-            "is filled".red().bold()
-        );
+        logger.update_fail(current_day, "filled");
+
         return if until_today { Ok(true) } else { Ok(false) };
     }
 
@@ -40,12 +37,7 @@ pub async fn fill_day(
 
     attendance.fill_day_request(client, url, &day_id).await?;
 
-    println!(
-        "{} {} {}",
-        "Day".green().bold(),
-        current_day.green().bold(),
-        "is updated in the calendar".green().bold()
-    );
+    logger.update_success(current_day);
 
     Ok(false)
 }

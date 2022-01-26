@@ -2,7 +2,13 @@
 
 ## How to use
 
-- Create a folder with the binary and a config.json with this (example):
+- Download personio_tool_mac.zip/personio_tool_windows.zip, extract the folder, update config.json (example below), run app in the terminal.<br>
+<br>
+- if ``"untilToday": false``, app will use startDay and endDay to fill the calendar.<br>
+<br>
+- if ``"untilToday": true``, app will fill days backward from today until the first worked filled day.
+<br>
+<br>
 
 {<br>
 &emsp;"credentials": {<br>
@@ -27,7 +33,8 @@
 &emsp;&emsp;"timeoutRequestSeconds": 20<br>
 &emsp;}<br>
 }
-
+<br>
+<br>
 - Open the terminal, execute the file
     - Windows: ``.\personio_tool``
     - Mac: ``./personio_tool``
