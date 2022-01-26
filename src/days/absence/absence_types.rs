@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
@@ -41,7 +41,8 @@ impl AbsenceTypes {
             .send()
             .await?
             .json()
-            .await?;
+            .await
+            .with_context(|| "Absences types failed")?;
 
         if !response_absences_types.success {
             return Err(anyhow!("Cannot get absences days types"));

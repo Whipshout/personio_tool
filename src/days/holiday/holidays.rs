@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
@@ -32,7 +32,8 @@ impl Holidays {
             .send()
             .await?
             .json()
-            .await?;
+            .await
+            .with_context(|| "Holidays request failed")?;
 
         if !response_holidays.success {
             return Err(anyhow!("Could not get holidays"));

@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
@@ -44,7 +44,8 @@ impl Days {
             .send()
             .await?
             .json()
-            .await?;
+            .await
+            .with_context(|| "Days request failed")?;
 
         let is_filled = !response_days.data.is_empty()
             && response_days.data.first().unwrap().attributes.status == "confirmed";

@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
@@ -64,7 +64,8 @@ impl Absences {
             .send()
             .await?
             .json()
-            .await?;
+            .await
+            .with_context(|| "Absences request failed")?;
 
         if !response_absences.success {
             return Err(anyhow!("Could not get absences"));

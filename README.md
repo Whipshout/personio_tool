@@ -10,8 +10,9 @@
 &emsp;&emsp;"password": "your_password"<br>
 &emsp;},<br>
 &emsp;"dates": {<br>
-&emsp;&emsp;"startDay": "2022-01-28",<br>
-&emsp;&emsp;"endDay": "2022-01-28"<br>
+&emsp;&emsp;"startDay": "2022-01-24",<br>
+&emsp;&emsp;"endDay": "2022-01-26",<br>
+&emsp;&emsp;"untilToday": false<br>
 &emsp;},<br>
 &emsp;"times": {<br>
 &emsp;&emsp;"breakStartHour": "14:00:00.0",<br>

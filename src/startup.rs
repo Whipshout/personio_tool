@@ -106,7 +106,18 @@ pub async fn run(config: Configuration, urls: Urls, client: Client) -> Result<()
             continue;
         }
 
-        fill_day(&client, profile_id, &config.times, &urls.attendance, &day).await?;
+        if fill_day(
+            &client,
+            profile_id,
+            &config.times,
+            &urls.attendance,
+            &day,
+            config.dates.until_today,
+        )
+        .await?
+        {
+            break;
+        }
     }
 
     println!(

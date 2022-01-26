@@ -12,7 +12,8 @@ pub async fn fill_day(
     times: &Times,
     url: &str,
     current_day: &str,
-) -> Result<()> {
+    until_today: bool,
+) -> Result<bool> {
     let (response_days, is_filled) = Days::get_days(client, url, profile_id, current_day).await?;
 
     if is_filled {
@@ -22,7 +23,7 @@ pub async fn fill_day(
             &current_day.red().bold(),
             "is filled".red().bold()
         );
-        return Ok(());
+        return if until_today { Ok(true) } else { Ok(false) };
     }
 
     let day_id = if let Some(id) = response_days.get_id() {
@@ -46,5 +47,5 @@ pub async fn fill_day(
         "is updated in the calendar".green().bold()
     );
 
-    Ok(())
+    Ok(false)
 }
