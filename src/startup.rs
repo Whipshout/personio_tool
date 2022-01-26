@@ -25,7 +25,7 @@ pub fn initialize(path: &str) -> Result<(Configuration, Urls, Client)> {
     println!(
         "{}",
         "--------------------------------------------------------"
-            .on_blue()
+            .on_white()
             .black()
     );
 
@@ -44,7 +44,7 @@ pub async fn run(config: Configuration, urls: Urls, client: Client) -> Result<()
     println!(
         "{}",
         "--------------------------------------------------------"
-            .on_blue()
+            .on_white()
             .black()
     );
 
@@ -60,7 +60,7 @@ pub async fn run(config: Configuration, urls: Urls, client: Client) -> Result<()
     println!(
         "{}",
         "--------------------------------------------------------"
-            .on_blue()
+            .on_white()
             .black()
     );
 
@@ -84,7 +84,7 @@ pub async fn run(config: Configuration, urls: Urls, client: Client) -> Result<()
     println!(
         "{}",
         "--------------------------------------------------------"
-            .on_blue()
+            .on_white()
             .black()
     );
 
@@ -92,7 +92,7 @@ pub async fn run(config: Configuration, urls: Urls, client: Client) -> Result<()
     println!(
         "{}",
         "--------------------------------------------------------"
-            .on_blue()
+            .on_white()
             .black()
     );
 
@@ -123,14 +123,14 @@ pub async fn run(config: Configuration, urls: Urls, client: Client) -> Result<()
     println!(
         "{}",
         "--------------------------------------------------------"
-            .on_blue()
+            .on_white()
             .black()
     );
     println!("{}", "Filling days finished !!!".yellow().bold());
     println!(
         "{}",
         "--------------------------------------------------------"
-            .on_blue()
+            .on_white()
             .black()
     );
 
