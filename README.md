@@ -6,7 +6,7 @@
 
 - if ``"untilToday": false``, app will use startDay and endDay to fill the calendar.<br>
 
-- if ``"untilToday": true``, app will fill days backward from today until the first worked filled day.
+- if ``"untilToday": true``, app will fill days backwards from today until the last worked filled day.
 <br>
 <br>
 
