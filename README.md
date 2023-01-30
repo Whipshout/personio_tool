@@ -1,5 +1,7 @@
 # Personio tool
 
+# Outdated! Personnio changed the request and added more security :')
+
 ## How to use
 
 - Download personio_tool_mac.zip/personio_tool_windows.zip, extract the folder, update config.json (example below), run app in the terminal.<br>
